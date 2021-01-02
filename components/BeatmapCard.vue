@@ -1,14 +1,21 @@
 <template>
-  <a-card :title="beatmap.title" style="width: 300px">
+  <a-card :title="beatmap.title" style="width: 320px">
     <a
       slot="extra"
       :href="'https://cadenzavr.com/?beatmap=' + beatmap.fileUrl"
       title="Play in Cadenza"
     >
-      <a-icon type="caret-right" />
+      <a-icon class="header-icon" type="caret-right" />
     </a>
     <a slot="extra" :href="beatmap.fileUrl">
-      <a-icon type="download" />
+      <a-icon class="header-icon" type="download" title="Download beatmap" />
+    </a>
+    <a slot="extra" @click="copyToClipboard(beatmap.fileUrl)">
+      <a-icon
+        class="header-icon"
+        type="copy"
+        title="Copy beatmap URL to clipboard"
+      />
     </a>
     <a-icon
       class="play-icon"
@@ -79,6 +86,10 @@ export default {
       this.audio.play()
     },
 
+    copyToClipboard(text) {
+      navigator.clipboard.writeText(text)
+    },
+
     getDifficultyColor(mode, difficulty) {
       if (mode === '1') {
         if (difficulty >= 7.5) {
@@ -99,6 +110,10 @@ export default {
 <style>
 .ant-descriptions-row > td {
   padding-bottom: 0;
+}
+.header-icon {
+  font-size: 20px;
+  margin-left: 5px;
 }
 .play-icon {
   font-size: 64px;

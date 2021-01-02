@@ -1,7 +1,10 @@
 <template>
-  <div>
+  <div id="content">
     <div id="menu-bar">
-      <a-form :label-col="{ span: 2 }" :wrapper-col="{ span: 12 }">
+      <a-form
+        :label-col="{ lg: { span: 2 } }"
+        :wrapper-col="{ lg: { span: 12 } }"
+      >
         <a-form-item label="Genre">
           <a-select
             id="genre-select"
@@ -241,7 +244,7 @@ export default {
 </script>
 
 <style>
-body {
+#content {
   padding: 100px;
 }
 
