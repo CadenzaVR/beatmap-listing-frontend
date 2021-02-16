@@ -6,12 +6,7 @@
         :wrapper-col="{ lg: { span: 12 } }"
       >
         <a-form-item label="Genre">
-          <a-select
-            id="genre-select"
-            mode="multiple"
-            :default-value="Object.values(genres)"
-            @change="genreChanged"
-          >
+          <a-select id="genre-select" mode="multiple" @change="genreChanged">
             <a-select-option v-for="(value, name) in genres" :key="value">{{
               name
             }}</a-select-option>
@@ -22,7 +17,6 @@
           <a-select
             id="language-select"
             mode="multiple"
-            :default-value="Object.values(languages)"
             @change="languageChanged"
           >
             <a-select-option v-for="(value, name) in languages" :key="value">{{
@@ -32,12 +26,7 @@
         </a-form-item>
 
         <a-form-item label="Mode">
-          <a-select
-            id="mode-select"
-            mode="multiple"
-            :default-value="Object.values(modes)"
-            @change="modeChanged"
-          >
+          <a-select id="mode-select" mode="multiple" @change="modeChanged">
             <a-select-option v-for="(value, name) in modes" :key="value">{{
               name
             }}</a-select-option>
@@ -48,7 +37,6 @@
           <a-select
             id="difficulty-select"
             mode="multiple"
-            :default-value="Object.values(difficulties)"
             @change="difficultyChanged"
           >
             <a-select-option
@@ -153,10 +141,10 @@ export default {
       languages: LANGUAGES,
       modes: MODES,
       filters: {
-        genre: Object.values(GENRES).map(() => true),
-        language: Object.values(LANGUAGES).map(() => true),
-        mode: Object.values(MODES).map(() => true),
-        difficulty: Object.values(DIFFICULTIES).map(() => true),
+        genre: Object.values(GENRES).map(() => false),
+        language: Object.values(LANGUAGES).map(() => false),
+        mode: Object.values(MODES).map(() => false),
+        difficulty: Object.values(DIFFICULTIES).map(() => false),
       },
     }
   },
@@ -217,16 +205,24 @@ export default {
     },
 
     updateResults() {
+      const isGenreFiltered = this.filters.genre.includes(true)
+      const isLanguageFiltered = this.filters.language.includes(true)
+      const isModeFiltered = this.filters.mode.includes(true)
+      const isDifficultyFiltered = this.filters.difficulty.includes(true)
+
       this.beatmaps = this.allBeatmaps.filter((beatmap) => {
-        if (!this.filters.genre[beatmap.genre]) {
+        if (isGenreFiltered && !this.filters.genre[beatmap.genre]) {
           return false
         }
-        if (!this.filters.language[beatmap.language]) {
+        if (isLanguageFiltered && !this.filters.language[beatmap.language]) {
           return false
         }
         for (const mode in beatmap.difficulties) {
-          if (this.filters.mode[parseInt(mode)]) {
+          if (!isModeFiltered || this.filters.mode[parseInt(mode)]) {
             const difficulties = beatmap.difficulties[mode]
+            if (!isDifficultyFiltered) {
+              return true
+            }
             for (const difficulty of difficulties) {
               if (
                 this.filters.difficulty[this.getDifficulty(mode, difficulty[1])]
